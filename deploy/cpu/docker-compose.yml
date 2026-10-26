@@ -1,0 +1,9 @@
+services:
+  model:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    restart: unless-stopped
+    command: ["-m", "/models/${MODEL_FILE:-smollm2-1.7b-instruct-q4_k_m.gguf}", "-c", "${CONTEXT_SIZE:-8192}", "-np", "${PARALLEL_REQUESTS:-1}"]
+    volumes: ["./models:/models:ro"]
+    networks: [inference]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]

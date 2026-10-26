@@ -1,0 +1,10 @@
+services:
+  model:
+    image: ghcr.io/ggml-org/llama.cpp:server-rocm
+    restart: unless-stopped
+    devices: ["/dev/kfd:/dev/kfd", "/dev/dri:/dev/dri"]
+    group_add: [video, render]
+    command: ["-m", "/models/${MODEL_FILE:-smollm2-1.7b-instruct-q4_k_m.gguf}", "-c", "${CONTEXT_SIZE:-8192}", "-np", "${PARALLEL_REQUESTS:-1}", "-ngl", "${GPU_LAYERS:-99}"]
+    volumes: ["./models:/models:ro"]
+    networks: [inference]
+    security_opt: [no-new-privileges:true, "seccomp:unconfined"]
